@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Email Marketing Report COL</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;900&family=IBM+Plex+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#F0EDE4;color:#1a1a1a;font-family:'IBM Plex Mono',monospace;padding:2rem;}
+.hd{display:flex;justify-content:space-between;border-bottom:2.5px solid #1a1a1a;padding-bottom:1rem;margin-bottom:1.5rem;}
+.big{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:64px;color:#C8001E;line-height:1;}
+.bn{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:22px;color:#C8001E;text-align:right;line-height:1.1;}
+.xs{font-size:11px;color:#555;margin-top:6px;}
+.cfg{border:1.5px solid #1a1a1a;padding:1.25rem;margin-bottom:1.5rem;}
+.cfg-t{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px;}
+.bg{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:8px;margin-bottom:10px;}
+.br{display:flex;align-items:center;gap:8px;}
+.bnum{font-size:10px;color:#888;width:22px;flex-shrink:0;}
+input[type=text]{font-family:'IBM Plex Mono',monospace;font-size:12px;padding:6px 10px;border:1.5px solid #aaa;background:#fff;color:#1a1a1a;height:32px;outline:none;-webkit-user-select:text;user-select:text;cursor:text;}
+input[type=text]:focus{border-color:#C8001E;}
+input[type=month]{font-family:'IBM Plex Mono',monospace;font-size:12px;padding:6px 10px;border:1.5px solid #aaa;background:#fff;color:#1a1a1a;height:32px;outline:none;}
+.inp-name{width:115px;}.inp-key{flex:1;}
+.btn-s{font-family:'IBM Plex Mono',monospace;font-size:11px;padding:6px 14px;border:1.5px solid #aaa;background:transparent;color:#555;cursor:pointer;}
+.btn-tgl{font-size:10px;font-family:'IBM Plex Mono',monospace;background:none;border:none;color:#888;cursor:pointer;text-decoration:underline;padding:0;}
+.ctrl{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;margin-bottom:1.5rem;}
+.rbtn{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:17px;padding:8px 26px;background:#C8001E;color:#F0EDE4;border:none;cursor:pointer;text-transform:uppercase;}
+.rbtn:disabled{opacity:.4;cursor:not-allowed;}
+.pbtn{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;padding:8px 20px;background:#1a1a1a;color:#F0EDE4;border:none;cursor:pointer;text-transform:uppercase;display:none;}
+.st{font-size:11px;color:#555;padding:8px 0;display:none;}
+.pr{height:2px;background:#ddd;margin-top:5px;}
+.pf{height:100%;background:#C8001E;transition:width .3s;}
+.res{display:none;}
+.btabs{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:1rem;}
+.btab{font-family:'IBM Plex Mono',monospace;font-size:10px;padding:4px 12px;border:1.5px solid #bbb;background:transparent;color:#555;cursor:pointer;text-transform:uppercase;}
+.btab.on{border-color:#C8001E;background:#C8001E;color:#F0EDE4;}
+.wktabs{display:flex;gap:5px;margin-bottom:1.25rem;flex-wrap:wrap;}
+.wktab{font-family:'IBM Plex Mono',monospace;font-size:11px;padding:5px 14px;border:1.5px solid #aaa;background:transparent;color:#555;cursor:pointer;}
+.wktab.on{border-color:#C8001E;background:#C8001E;color:#F0EDE4;font-weight:700;}
+.wktab.sum{border-color:#1a1a1a;background:#1a1a1a;color:#F0EDE4;}
+.wrap{overflow-x:auto;margin-bottom:1.5rem;}
+table.rt{border-collapse:collapse;font-size:11px;white-space:nowrap;}
+.rt .lbl{font-size:9px;text-transform:uppercase;letter-spacing:.06em;color:#666;padding:8px 14px;border:1px solid #ddd;background:#F0EDE4;min-width:210px;position:sticky;left:0;z-index:2;}
+.rt .lbl.sec{background:#1a1a1a;color:#F0EDE4;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;}
+.rt .lbl.sec19{background:#C8001E;color:#F0EDE4;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;}
+.rt .ch{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;text-transform:uppercase;background:#1a1a1a;color:#F0EDE4;padding:8px 16px;text-align:center;border:1px solid #333;min-width:160px;line-height:1.2;}
+.rt .ch.totcol{background:#C8001E;}
+.rt td.v{padding:8px 16px;border:1px solid #e0ddd6;text-align:center;background:#F8F6F0;color:#1a1a1a;}
+.rt tr:nth-child(even) td.v{background:#F0EDE4;}
+.rt td.v.red{color:#C8001E;font-weight:700;}
+.rt td.v.bold{font-weight:700;}
+.rt td.v.tot{background:#fff5f5;color:#C8001E;font-weight:700;}
+.rt td.v.grand{background:#C8001E;color:#F0EDE4;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;}
+.rt td.ed{padding:0;border:1.5px solid #C8001E;background:#fffdf5;}
+.edinp{width:100%;min-height:34px;padding:8px 16px;font-family:'IBM Plex Mono',monospace;font-size:11px;border:none;background:transparent;color:#1a1a1a;text-align:center;outline:none;-webkit-user-select:text;user-select:text;cursor:text;}
+.note{background:#fff9e6;border:1px solid #e8c840;padding:8px 14px;font-size:10px;color:#666;margin-bottom:1rem;}
+.msg{padding:16px;font-size:12px;color:#555;}
+.pres-bar{display:none;background:#1a1a1a;padding:10px 16px;margin-bottom:1rem;align-items:center;justify-content:space-between;}
+.pres-bar span{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;color:#F0EDE4;text-transform:uppercase;}
+.pres-exit{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;padding:5px 14px;background:#555;color:#F0EDE4;border:none;cursor:pointer;}
+#pres-title{display:none;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:28px;color:#C8001E;margin-bottom:1rem;text-transform:uppercase;}
+body.pm .cfg,body.pm .ctrl,body.pm #sb,body.pm .btabs,body.pm .wktabs,body.pm .note{display:none!important;}
+body.pm .rt td.ed{border:1px solid #e0ddd6!important;background:#F8F6F0!important;}
+body.pm .edinp{pointer-events:none;}
+</style>
+</head>
+<body>
+<div class="pres-bar" id="pbar"><span>Modo presentación — <span id="pres-bn"></span></span><button class="pres-exit" onclick="exitPres()">✕ Salir</button></div>
+<div id="pres-title"></div>
+<div class="hd">
+  <div class="big">EMAIL<br>REPORT</div>
+  <div style="text-align:right;"><div class="bn">EMAIL<br>MARKETING<br>COL</div><div class="xs" id="hd-dates">— SEMANA —</div></div>
+</div>
+<div class="cfg" id="cfg-block">
+  <div class="cfg-t">Configuración de marcas</div>
+  <p style="font-size:10px;color:#888;margin-bottom:10px;">Omnisend: Settings → API keys &nbsp;|&nbsp; Klaviyo: Settings → API keys &nbsp;|&nbsp; Mailchimp: Account → Extras → API keys</p>
+  <div class="bg" id="brand-grid"></div>
+  <div style="display:flex;gap:10px;align-items:center;margin-top:8px;">
+    <button class="btn-s" id="save-btn">Guardar marcas</button>
+    <button class="btn-tgl" id="tgl-btn">Ocultar configuración</button>
+  </div>
+</div>
+<div class="ctrl">
+  <div><div style="font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:#888;margin-bottom:4px;">Mes</div><input type="month" id="mp"></div>
+  <button class="rbtn" id="run-btn">Generar reporte</button>
+  <button class="pbtn" id="pres-btn">🎯 Presentar</button>
+</div>
+<div class="st" id="sb"><span id="st2">Cargando...</span><div class="pr"><div class="pf" id="pf" style="width:0%"></div></div></div>
+<div class="res" id="results">
+  <div class="btabs" id="brand-tabs"></div>
+  <div class="wktabs" id="wk-tabs"></div>
+  <div id="detail"></div>
+</div>
+
+<script>
+var BRANDS_KEY = 'omni_brands_final';
+var SALES_KEY  = 'omni_sales_final';
+var brands = [], allData = {}, salesStore = {}, brandNames = [];
+var curBrand = '', curWeek = '1-7';
+var WEEKS = ['1-7','8-14','15-21','22-31'];
+var MON = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+
+// ── INIT ──────────────────────────────────────────────────────────────
+function init(){
+  try{ var b=localStorage.getItem(BRANDS_KEY); if(b) brands=JSON.parse(b); }catch(e){}
+  try{ var s=localStorage.getItem(SALES_KEY);  if(s) salesStore=JSON.parse(s); }catch(e){}
+  while(brands.length<12) brands.push({name:'',apiKey:'',type:'omnisend'});
+  buildBrandGrid();
+  var now = new Date();
+  document.getElementById('mp').value = now.getFullYear()+'-'+pad(now.getMonth()+1);
+  document.getElementById('save-btn').onclick = saveBrands;
+  document.getElementById('tgl-btn').onclick  = toggleCfg;
+  document.getElementById('mp').onchange      = updateHeader;
+  document.getElementById('run-btn').onclick  = fetchAll;
+  document.getElementById('pres-btn').onclick = enterPres;
+}
+
+function pad(n){ return String(n).padStart(2,'0'); }
+
+function buildBrandGrid(){
+  var g = document.getElementById('brand-grid');
+  g.innerHTML = '';
+  brands.forEach(function(b,i){
+    var row = document.createElement('div'); row.className='br';
+    row.innerHTML = '<span class="bnum">'+pad(i+1)+'</span>';
+    var ni = document.createElement('input'); ni.type='text'; ni.className='inp-name';
+    ni.placeholder='Marca '+(i+1); ni.value=b.name||''; ni.autocomplete='off';
+    ni.oninput = function(){ brands[i].name=this.value; };
+    var sel = document.createElement('select'); sel.className='inp-type';
+    sel.style.cssText='font-family:"IBM Plex Mono",monospace;font-size:11px;padding:5px 8px;border:1.5px solid #aaa;background:#fff;color:#1a1a1a;height:32px;outline:none;cursor:pointer;';
+    ['omnisend','klaviyo','mailchimp'].forEach(function(t){
+      var op=document.createElement('option'); op.value=t; op.textContent=t.charAt(0).toUpperCase()+t.slice(1);
+      if((b.type||'omnisend')===t) op.selected=true;
+      sel.appendChild(op);
+    });
+    sel.onchange = function(){ brands[i].type=this.value; };
+    var ki = document.createElement('input'); ki.type='text'; ki.className='inp-key';
+    ki.placeholder='API key'; ki.value=b.apiKey||''; ki.autocomplete='off';
+    ki.oninput = function(){ brands[i].apiKey=this.value; };
+    ki.onpaste = function(e){ e.stopPropagation(); var el=this; setTimeout(function(){ brands[i].apiKey=el.value; },10); };
+    row.appendChild(ni); row.appendChild(sel); row.appendChild(ki); g.appendChild(row);
+  });
+}
+
+function saveBrands(){
+  try{ localStorage.setItem(BRANDS_KEY, JSON.stringify(brands)); }catch(e){}
+  this.textContent='✓ Guardado';
+  var btn=this; setTimeout(function(){ btn.textContent='Guardar marcas'; },1500);
+}
+
+function toggleCfg(){
+  var g=document.getElementById('brand-grid'), vis=g.style.display!=='none';
+  g.style.display=vis?'none':'';
+  this.textContent=vis?'Mostrar configuración':'Ocultar configuración';
+}
+
+function updateHeader(){
+  var m=document.getElementById('mp').value; if(!m) return;
+  var p=m.split('-'), mn=MON[parseInt(p[1])-1];
+  var label = curWeek==='summary' ? mn.toUpperCase()+' '+p[0]+' — RESUMEN' : curWeek.split('-').join('–')+' '+mn.toUpperCase()+' '+p[0];
+  document.getElementById('hd-dates').textContent = label;
+}
+
+// ── SALES STORAGE ─────────────────────────────────────────────────────
+function skey(brand, week, cid, field){
+  return brand+'||'+document.getElementById('mp').value+'||'+week+'||'+cid+'||'+field;
+}
+function getSale(brand, week, cid, field){ return salesStore[skey(brand,week,cid,field)]||''; }
+function setSale(brand, week, cid, field, val){
+  salesStore[skey(brand,week,cid,field)] = val;
+  try{ localStorage.setItem(SALES_KEY, JSON.stringify(salesStore)); }catch(e){}
+}
+
+// ── HELPERS ───────────────────────────────────────────────────────────
+function pN(v){ return parseFloat(String(v||0).replace(/[^0-9.]/g,''))||0; }
+function fCur(n){ return '$'+(Math.round(n)||0).toLocaleString('es-CO'); }
+function fNum(n){ return (Math.round(n)||0).toLocaleString('es-CO'); }
+function fPct(n){ return (n*100).toFixed(1)+'%'; }
+function fDate(s){ return s?s.substring(0,10).split('-').reverse().join('/'):'—'; }
+
+// ── FETCH ─────────────────────────────────────────────────────────────
+function getRange(month, week){
+  var p=month.split('-').map(Number), r=week.split('-').map(Number);
+  var last=new Date(p[0],p[1],0).getDate();
+  return {
+    s: new Date(p[0],p[1]-1,r[0]).toISOString(),
+    e: new Date(p[0],p[1]-1,Math.min(r[1],last),23,59,59).toISOString()
+  };
+}
+
+async function fetchCampaigns(apiKey, rangeStart, rangeEnd){
+  var h={'X-API-Key':apiKey};
+  var sTs=new Date(rangeStart).getTime(), eTs=new Date(rangeEnd).getTime();
+  var all=[], url='https://api.omnisend.com/v3/campaigns?status=sent&limit=100';
+  while(url){
+    var r=await fetch(url,{headers:h}); if(!r.ok) break;
+    var j=await r.json();
+    all=all.concat(j.campaign||j.campaigns||[]);
+    var nxt=j.paging&&j.paging.next?j.paging.next:null;
+    url=(nxt&&nxt!==url)?nxt:null;
+  }
+  var inRange=all.filter(function(c){
+    var d=c.startDate||c.scheduledFor||c.updatedAt||'';
+    if(!d) return false;
+    var t=new Date(d).getTime();
+    return t>=sTs && t<=eTs;
+  });
+  var boosters=inRange.filter(function(c){ return c.name&&c.name.toLowerCase().indexOf('booster of:')===0; });
+  var mains=inRange.filter(function(c){ return !c.name||c.name.toLowerCase().indexOf('booster of:')!==0; });
+  var result=mains.map(function(main){
+    var booster=null;
+    for(var i=0;i<boosters.length;i++){
+      var bname=boosters[i].name.replace(/^booster of:\s*/i,'').trim().toLowerCase();
+      if(main.name&&main.name.trim().toLowerCase()===bname){ booster=boosters[i]; break; }
+    }
+    return {main:main, booster:booster};
+  });
+  result.sort(function(a,b){
+    var da=a.main?(a.main.startDate||''):(a.booster?a.booster.startDate||'':'');
+    var db=b.main?(b.main.startDate||''):(b.booster?b.booster.startDate||'':'');
+    return new Date(da)-new Date(db);
+  });
+  return result;
+}
+
+async function fetchKlaviyo(apiKey, rangeStart, rangeEnd){
+  var sTs=new Date(rangeStart).getTime(), eTs=new Date(rangeEnd).getTime();
+  var h={'Authorization':'Klaviyo-API-Key '+apiKey,'revision':'2023-12-15','Accept':'application/json'};
+  var all=[], url='https://a.klaviyo.com/api/campaigns/?filter=equals(messages.channel,"email"),equals(status,"Sent")&page[size]=50';
+  while(url){
+    var r=await fetch(url,{headers:h}); if(!r.ok) break;
+    var j=await r.json();
+    var items=j.data||[];
+    all=all.concat(items);
+    url=(j.links&&j.links.next&&j.links.next!==url)?j.links.next:null;
+  }
+  var inRange=all.filter(function(c){
+    var d=c.attributes&&(c.attributes.send_time||c.attributes.scheduled_at||c.attributes.updated_at)||'';
+    if(!d) return false;
+    var t=new Date(d).getTime();
+    return t>=sTs && t<=eTs;
+  });
+  var result=inRange.map(function(c){
+    var attr=c.attributes||{};
+    var norm={
+      campaignID: c.id,
+      name: attr.name||'Sin nombre',
+      startDate: attr.send_time||attr.scheduled_at||'',
+      sent: (attr.statistics&&attr.statistics.recipients)||0,
+      opened: (attr.statistics&&attr.statistics.opens_unique)||0,
+      clicked: (attr.statistics&&attr.statistics.clicks_unique)||0,
+      bounced: (attr.statistics&&attr.statistics.bounces_total)||0,
+      complained: (attr.statistics&&attr.statistics.spam_complaints_unique)||0,
+      unsubscribed: (attr.statistics&&attr.statistics.unsubscribes_unique)||0,
+    };
+    return {main:norm, booster:null};
+  });
+  result.sort(function(a,b){ return new Date(a.main.startDate)-new Date(b.main.startDate); });
+  return result;
+}
+
+async function fetchMailchimp(apiKey, rangeStart, rangeEnd){
+  var sTs=new Date(rangeStart).getTime(), eTs=new Date(rangeEnd).getTime();
+  var dc=apiKey.split('-').pop();
+  var url='https://'+dc+'.api.mailchimp.com/3.0/campaigns?status=sent&count=200&fields=campaigns.id,campaigns.settings.title,campaigns.send_time,campaigns.emails_sent,campaigns.report_summary';
+  var r=await fetch(url,{headers:{'Authorization':'Basic '+btoa('anystring:'+apiKey)}});
+  if(!r.ok) return [];
+  var j=await r.json();
+  var items=(j.campaigns||[]).filter(function(c){
+    var t=c.send_time?new Date(c.send_time).getTime():0;
+    return t>=sTs && t<=eTs;
+  });
+  var result=items.map(function(c){
+    var rs=c.report_summary||{};
+    var norm={
+      campaignID: c.id,
+      name: (c.settings&&c.settings.title)||c.id,
+      startDate: c.send_time||'',
+      sent: c.emails_sent||0,
+      opened: rs.unique_opens||0,
+      clicked: rs.unique_subscriber_clicks||0,
+      bounced: 0,
+      complained: 0,
+      unsubscribed: 0,
+    };
+    return {main:norm, booster:null};
+  });
+  result.sort(function(a,b){ return new Date(a.main.startDate)-new Date(b.main.startDate); });
+  return result;
+}
+
+async function fetchByType(brand, rangeStart, rangeEnd){
+  var t=(brand.type||'omnisend').toLowerCase();
+  if(t==='klaviyo')    return fetchKlaviyo(brand.apiKey, rangeStart, rangeEnd);
+  if(t==='mailchimp')  return fetchMailchimp(brand.apiKey, rangeStart, rangeEnd);
+  return fetchCampaigns(brand.apiKey, rangeStart, rangeEnd);
+}
+
+async function fetchAll(){
+  var month=document.getElementById('mp').value;
+  if(!month){ alert('Selecciona un mes'); return; }
+  var active=brands.filter(function(b){ return b.name&&b.apiKey; });
+  if(!active.length){ alert('Configura al menos una marca'); return; }
+  document.getElementById('run-btn').disabled=true;
+  document.getElementById('sb').style.display='block';
+  allData={};
+  for(var i=0;i<active.length;i++){
+    var b=active[i];
+    document.getElementById('st2').textContent='Cargando '+b.name+' ('+(i+1)+'/'+active.length+')...';
+    document.getElementById('pf').style.width=Math.round(i/active.length*100)+'%';
+    allData[b.name]={weeks:{}};
+    for(var w=0;w<WEEKS.length;w++){
+      var rng=getRange(month,WEEKS[w]);
+      try{ allData[b.name].weeks[WEEKS[w]]=await fetchByType(b,rng.s,rng.e); }
+      catch(err){ allData[b.name].weeks[WEEKS[w]]=[]; }
+    }
+  }
+  document.getElementById('pf').style.width='100%';
+  document.getElementById('st2').textContent='✓ '+active.length+' marcas cargadas';
+  document.getElementById('run-btn').disabled=false;
+  document.getElementById('pres-btn').style.display='inline-block';
+  brandNames=active.map(function(b){ return b.name; });
+  curBrand=brandNames[0]; curWeek='1-7';
+  buildBrandTabs(); buildWeekTabs(); showDetail();
+  document.getElementById('results').style.display='block';
+  document.getElementById('results').scrollIntoView({behavior:'smooth'});
+}
+
+// ── TABS ──────────────────────────────────────────────────────────────
+function buildBrandTabs(){
+  var tabs=document.getElementById('brand-tabs'); tabs.innerHTML='';
+  brandNames.forEach(function(name,i){
+    var btn=document.createElement('button'); btn.className='btab'+(i===0?' on':''); btn.textContent=name;
+    btn.onclick=function(){
+      document.querySelectorAll('.btab').forEach(function(b){b.classList.remove('on');});
+      btn.classList.add('on'); curBrand=name; showDetail();
+    };
+    tabs.appendChild(btn);
+  });
+}
+
+function buildWeekTabs(){
+  var tabs=document.getElementById('wk-tabs'); tabs.innerHTML='';
+  ['1-7','8-14','15-21','22-31'].forEach(function(wk){
+    var btn=document.createElement('button'); btn.className='wktab'+(wk===curWeek?' on':'');
+    btn.textContent='Semana '+wk.split('-').join('–');
+    btn.onclick=function(){
+      document.querySelectorAll('.wktab').forEach(function(b){b.classList.remove('on');});
+      btn.classList.add('on'); curWeek=wk; updateHeader(); showDetail();
+    };
+    tabs.appendChild(btn);
+  });
+  var sum=document.createElement('button'); sum.className='wktab sum'; sum.textContent='📊 Resumen del mes';
+  sum.onclick=function(){
+    document.querySelectorAll('.wktab').forEach(function(b){b.classList.remove('on');});
+    sum.classList.add('on'); curWeek='summary'; updateHeader(); showDetail();
+  };
+  tabs.appendChild(sum);
+}
+
+// ── SHOW DETAIL ───────────────────────────────────────────────────────
+function showDetail(){
+  updateHeader();
+  if(curWeek==='summary') showSummary();
+  else showWeek(curBrand, curWeek);
+}
+
+// ── WEEK VIEW ─────────────────────────────────────────────────────────
+function showWeek(brand, week){
+  var el=document.getElementById('detail');
+  var d=allData[brand];
+  if(!d){ el.innerHTML='<p class="msg">Sin datos.</p>'; return; }
+  var camps=d.weeks[week]||[];
+
+  // Build table element by element (no innerHTML for tbody — avoids escaping issues)
+  var tbl=document.createElement('table'); tbl.className='rt';
+
+  // HEADER
+  var thead=tbl.createTHead(); var hrow=thead.insertRow();
+  addTH(hrow,'MÉTRICA','lbl');
+  camps.forEach(function(p){
+    var nm=p.main?p.main.name:(p.booster?p.booster.name.replace(/^booster of:\s*/i,''):'—');
+    var dt=p.main?fDate(p.main.startDate):(p.booster?fDate(p.booster.startDate):'');
+    addTH(hrow, nm+'<br><small style="font-weight:400;opacity:.7;font-size:8px;">'+dt+'</small>', 'ch', true);
+  });
+  addTH(hrow,'TOTAL','ch totcol');
+
+  // BODY
+  var tbody=tbl.createTBody();
+
+  // Stats totals
+  var tSent=0,tOpen=0,tClick=0,tBounce=0,tSpam=0,tUnsub=0;
+  camps.forEach(function(p){
+    if(!p.main) return;
+    tSent+=p.main.sent||0; tOpen+=p.main.opened||0; tClick+=p.main.clicked||0;
+    tBounce+=p.main.bounced||0; tSpam+=p.main.complained||0; tUnsub+=p.main.unsubscribed||0;
+  });
+
+  secRow(tbody, 'HORARIO Y FECHA', camps.length+1);
+  dataRow(tbody,'1. CAMPAÑA', camps.map(function(p){return p.main?p.main.name:(p.booster?p.booster.name:'—');}), camps.filter(function(p){return p.main;}).length+' camp.');
+  dataRow(tbody,'3. DESUSCRITOS', camps.map(function(p){return p.main?fNum(p.main.unsubscribed||0):'—';}), fNum(tUnsub));
+  dataRow(tbody,'4. BOUNCE RATE', camps.map(function(p){return p.main?fPct((p.main.bounced||0)/(p.main.sent||1)):'—';}), tSent>0?fPct(tBounce/tSent):'—', 'red');
+  dataRow(tbody,'5. Nº REBOTADOS', camps.map(function(p){return p.main?fNum(p.main.bounced||0):'—';}), fNum(tBounce));
+  dataRow(tbody,'6. SPAM RATE', camps.map(function(p){return p.main?fPct((p.main.complained||0)/(p.main.sent||1)):'—';}), tSent>0?fPct(tSpam/tSent):'—', 'red');
+  dataRow(tbody,'7. Nº CORREOS EN SPAM', camps.map(function(p){return p.main?fNum(p.main.complained||0):'—';}), fNum(tSpam));
+  dataRow(tbody,'9. OPEN RATE', camps.map(function(p){return p.main?fPct((p.main.opened||0)/(p.main.sent||1)):'—';}), tSent>0?fPct(tOpen/tSent):'—', 'red');
+  dataRow(tbody,'10. Nº ABIERTOS', camps.map(function(p){return p.main?fNum(p.main.opened||0):'—';}), fNum(tOpen), 'bold');
+  dataRow(tbody,'11. CTR EN ENLACE', camps.map(function(p){return p.main?fPct((p.main.clicked||0)/(p.main.sent||1)):'—';}), tSent>0?fPct(tClick/tSent):'—', 'red');
+  dataRow(tbody,'12. CLICKS CONTACTOS', camps.map(function(p){return p.main?fNum(p.main.clicked||0):'—';}), fNum(tClick), 'bold');
+
+  secRow(tbody,'VENTAS', camps.length+1);
+
+  // Editable rows — each input directly writes to salesStore and triggers recalc
+  // makeInput creates an input that calls recalc on change
+  function makeInput(brand, week, cid, f){
+    var inp=document.createElement('input');
+    inp.type='text'; inp.className='edinp';
+    inp.dataset.f=f; inp.dataset.cid=cid;
+    inp.placeholder='0'; inp.autocomplete='off';
+    // Restore saved value
+    var saved=getSale(brand,week,cid,f); if(saved) inp.value=saved;
+    inp.addEventListener('input', function(){
+      setSale(brand,week,cid,f,this.value);
+      recalc();
+    });
+    inp.addEventListener('paste', function(){
+      var el=this; setTimeout(function(){ setSale(brand,week,cid,f,el.value); recalc(); },50);
+    });
+    return inp;
+  }
+
+  var edFields=[
+    {lbl:'14. Nº DE VENTAS CAMPAÑA', f:'ord'},
+    {lbl:'15. VENTA CAMPAÑA EMAIL',  f:'sales'},
+    {lbl:'16. Nº VENTAS BOOSTER',    f:'bord'},
+    {lbl:'17. VENTAS BOOSTER',       f:'bsales'},
+  ];
+  var totalCells={};
+  edFields.forEach(function(ef){
+    var row=tbody.insertRow(); addTD(row, ef.lbl, 'lbl');
+    camps.forEach(function(p){
+      var cid=p.main?p.main.campaignID:(p.booster?p.booster.campaignID:'x');
+      var td=row.insertCell(); td.className='ed';
+      var inp=makeInput(brand, week, cid, ef.f);
+      td.appendChild(inp);
+    });
+    var totTd=row.insertCell(); totTd.className='v tot red'; totTd.textContent=fCur(0);
+    totalCells[ef.f]=totTd;
+  });
+
+  // Row 18 — auto spans all camp columns
+  var row18=tbody.insertRow(); addTD(row18,'18. VENTAS AUTOMATIZACIONES','lbl');
+  var td18=row18.insertCell(); td18.className='ed'; td18.colSpan=camps.length;
+  var autoInp=makeInput(brand, week, 'AUTO', 'auto');
+  td18.appendChild(autoInp);
+  var tot18=row18.insertCell(); tot18.className='v tot red'; tot18.textContent=fCur(0);
+  totalCells['auto']=tot18;
+
+  // Row 19 — totals (read-only, updated by recalc)
+  var row19=tbody.insertRow();
+  var lbl19=row19.insertCell(); lbl19.className='lbl sec19'; lbl19.textContent='19. VENTAS TOTALES';
+  var campTot19=[];
+  camps.forEach(function(){
+    var td=row19.insertCell(); td.className='v grand'; td.textContent=fCur(0);
+    campTot19.push(td);
+  });
+  var grandTd=row19.insertCell(); grandTd.className='v grand'; grandTd.textContent=fCur(0);
+
+  // THE RECALC FUNCTION — reads directly from inputs in this table
+  function recalc(){
+    var sales=0, bsales=0, auto=0, ord=0, bord=0;
+    var campSales={}, campBsales={};
+
+    // Read all editable inputs in this table
+    tbl.querySelectorAll('.edinp').forEach(function(inp){
+      var f=inp.dataset.f, cid=inp.dataset.cid, v=pN(inp.value);
+      if(f==='ord')    ord+=v;
+      if(f==='sales'){  sales+=v; campSales[cid]=(campSales[cid]||0)+v; }
+      if(f==='bord')   bord+=v;
+      if(f==='bsales'){ bsales+=v; campBsales[cid]=(campBsales[cid]||0)+v; }
+      if(f==='auto')   auto+=v;
+    });
+
+    var grand = sales + bsales + auto;
+
+    // Update total column cells
+    if(totalCells.ord)    totalCells.ord.textContent    = fNum(ord);
+    if(totalCells.sales)  totalCells.sales.textContent  = fCur(sales);
+    if(totalCells.bord)   totalCells.bord.textContent   = fNum(bord);
+    if(totalCells.bsales) totalCells.bsales.textContent = fCur(bsales);
+    if(totalCells.auto)   totalCells.auto.textContent   = fCur(auto);
+
+    // Update row 19 per-camp cells
+    camps.forEach(function(p, idx){
+      var cid=p.main?p.main.campaignID:(p.booster?p.booster.campaignID:'x');
+      var campTotal=(campSales[cid]||0)+(campBsales[cid]||0);
+      if(campTot19[idx]) campTot19[idx].textContent=fCur(campTotal);
+    });
+
+    // Update row 19 grand total
+    grandTd.textContent = fCur(grand);
+  }
+
+
+
+  // Render
+  var note=document.createElement('div'); note.className='note';
+  note.innerHTML='✏️ Escribe en las celdas rojas. La fila 19 suma automáticamente.';
+  var wrap=document.createElement('div'); wrap.className='wrap'; wrap.appendChild(tbl);
+  el.innerHTML=''; el.appendChild(note); el.appendChild(wrap);
+
+  // recalc AFTER DOM is attached
+  recalc();
+  setTimeout(recalc, 100);
+}
+
+// ── HELPERS FOR TABLE BUILDING ────────────────────────────────────────
+function addTH(row, html, cls, useHTML){
+  var th=document.createElement('th'); th.className=cls;
+  if(useHTML) th.innerHTML=html; else th.textContent=html;
+  row.appendChild(th);
+}
+function addTD(row, text, cls){
+  var td=row.insertCell(); td.className=cls; td.textContent=text;
+}
+function secRow(tbody, lbl, span){
+  var row=tbody.insertRow();
+  var td=row.insertCell(); td.className='lbl sec'; td.textContent=lbl;
+  for(var i=0;i<span;i++){
+    var td2=row.insertCell(); td2.style.cssText='background:#1a1a1a;border:1px solid #333;padding:4px;';
+  }
+}
+function dataRow(tbody, lbl, vals, tot, cls){
+  var row=tbody.insertRow(); addTD(row,lbl,'lbl');
+  vals.forEach(function(v){addTD(row,v,'v'+(cls?' '+cls:''));});
+  addTD(row,tot,'v tot'+(cls?' '+cls:''));
+}
+
+// ── SUMMARY VIEW ──────────────────────────────────────────────────────
+function showSummary(){
+  var el=document.getElementById('detail');
+  var brand=curBrand, d=allData[brand];
+  if(!d){ el.innerHTML='<p class="msg">Sin datos.</p>'; return; }
+
+  var m=document.getElementById('mp').value;
+  var mn=MON[parseInt(m.split('-')[1])-1];
+
+  var tbl=document.createElement('table'); tbl.className='rt';
+  var thead=tbl.createTHead(); var hrow=thead.insertRow();
+  addTH(hrow,'MÉTRICA','lbl');
+  WEEKS.forEach(function(wk){ addTH(hrow,'Semana '+wk.split('-').join('–'),'ch'); });
+  addTH(hrow,'TOTAL '+mn.toUpperCase(),'ch totcol');
+  var tbody=tbl.createTBody();
+
+  // Stats summary
+  secRow(tbody,'RENDIMIENTO', WEEKS.length+1);
+  var statFields=[
+    {lbl:'3. DESUSCRITOS', fn:function(p){return p.main?p.main.unsubscribed||0:0;}, fmt:fNum},
+    {lbl:'4. BOUNCE RATE', fn:function(p){return [p.main?p.main.bounced||0:0, p.main?p.main.sent||0:0];}, fmt:'rate', cls:'red'},
+    {lbl:'9. OPEN RATE', fn:function(p){return [p.main?p.main.opened||0:0, p.main?p.main.sent||0:0];}, fmt:'rate', cls:'red'},
+    {lbl:'10. Nº ABIERTOS', fn:function(p){return p.main?p.main.opened||0:0;}, fmt:fNum, cls:'bold'},
+    {lbl:'11. CTR', fn:function(p){return [p.main?p.main.clicked||0:0, p.main?p.main.sent||0:0];}, fmt:'rate', cls:'red'},
+    {lbl:'12. CLICKS', fn:function(p){return p.main?p.main.clicked||0:0;}, fmt:fNum, cls:'bold'},
+  ];
+  statFields.forEach(function(sf){
+    var row=tbody.insertRow(); addTD(row,sf.lbl,'lbl');
+    var monthN=0, monthD=0, monthSum=0;
+    WEEKS.forEach(function(wk){
+      var camps=d.weeks[wk]||[];
+      if(sf.fmt==='rate'){
+        var num=0,den=0;
+        camps.forEach(function(p){var v=sf.fn(p);num+=v[0];den+=v[1];});
+        monthN+=num; monthD+=den;
+        addTD(row, den>0?fPct(num/den):'—', 'v'+(sf.cls?' '+sf.cls:''));
+      } else {
+        var sum=0; camps.forEach(function(p){sum+=sf.fn(p);}); monthSum+=sum;
+        addTD(row, sf.fmt(sum), 'v'+(sf.cls?' '+sf.cls:''));
+      }
+    });
+    addTD(row, sf.fmt==='rate'?(monthD>0?fPct(monthN/monthD):'—'):sf.fmt(monthSum), 'v tot'+(sf.cls?' '+sf.cls:''));
+  });
+
+  // Sales summary
+  secRow(tbody,'VENTAS DEL MES', WEEKS.length+1);
+  var salesFields=[
+    {lbl:'14. Nº VENTAS CAMPAÑA', f:'ord', fmt:fNum},
+    {lbl:'15. VENTA CAMPAÑA EMAIL', f:'sales', fmt:fCur},
+    {lbl:'16. Nº VENTAS BOOSTER', f:'bord', fmt:fNum},
+    {lbl:'17. VENTAS BOOSTER', f:'bsales', fmt:fCur},
+    {lbl:'18. VENTAS AUTOMATIZACIONES', f:'auto', fmt:fCur},
+  ];
+  salesFields.forEach(function(sf){
+    var row=tbody.insertRow(); addTD(row,sf.lbl,'lbl');
+    var monthTotal=0;
+    WEEKS.forEach(function(wk){
+      var camps=d.weeks[wk]||[], wkVal=0;
+      if(sf.f==='auto'){
+        wkVal=pN(getSale(brand,wk,'AUTO','auto'));
+      } else {
+        camps.forEach(function(p){
+          var cid=p.main?p.main.campaignID:(p.booster?p.booster.campaignID:'x');
+          wkVal+=pN(getSale(brand,wk,cid,sf.f));
+        });
+      }
+      monthTotal+=wkVal;
+      addTD(row, sf.fmt(wkVal), 'v red');
+    });
+    addTD(row, sf.fmt(monthTotal), 'v tot red');
+  });
+
+  // Row 19 monthly
+  var row19=tbody.insertRow();
+  var lbl19=row19.insertCell(); lbl19.className='lbl sec19'; lbl19.textContent='19. VENTAS TOTALES';
+  var monthGrand=0;
+  WEEKS.forEach(function(wk){
+    var camps=d.weeks[wk]||[], wkSales=0,wkBsales=0,wkAuto=0;
+    camps.forEach(function(p){
+      var cid=p.main?p.main.campaignID:(p.booster?p.booster.campaignID:'x');
+      wkSales +=pN(getSale(brand,wk,cid,'sales'));
+      wkBsales+=pN(getSale(brand,wk,cid,'bsales'));
+    });
+    wkAuto=pN(getSale(brand,wk,'AUTO','auto'));
+    var wkTotal=wkSales+wkBsales+wkAuto;
+    monthGrand+=wkTotal;
+    addTD(row19, fCur(wkTotal), 'v grand');
+  });
+  addTD(row19, fCur(monthGrand), 'v grand');
+
+  var wrap=document.createElement('div'); wrap.className='wrap'; wrap.appendChild(tbl);
+  el.innerHTML=''; el.appendChild(wrap);
+}
+
+// ── PRESENTATION MODE ─────────────────────────────────────────────────
+function enterPres(){
+  var a=document.querySelector('.btab.on'); var bn=a?a.textContent:'';
+  document.body.classList.add('pm');
+  document.getElementById('pbar').style.display='flex';
+  document.getElementById('pres-bn').textContent=bn;
+  document.getElementById('pres-title').style.display='block';
+  document.getElementById('pres-title').textContent=bn;
+  window.scrollTo(0,0);
+}
+function exitPres(){
+  document.body.classList.remove('pm');
+  document.getElementById('pbar').style.display='none';
+  document.getElementById('pres-title').style.display='none';
+}
+
+init();
+</script>
+</body>
+</html>
